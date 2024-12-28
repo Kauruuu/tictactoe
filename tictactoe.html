@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+
+    .game-container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cell:hover {
+      background-color: #e1e1e1;
+    }
+
+    .message {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .reset-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .reset-btn:hover {
+      background-color: #45a049;
+    }
+
+    .draw {
+      color: #ff9800;
+    }
+
+    .winner {
+      color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <h1>Tic-Tac-Toe</h1>
+    <div class="message" id="message">Player X's Turn</div>
+    <div class="board" id="board">
+      <div class="cell" id="cell-0"></div>
+      <div class="cell" id="cell-1"></div>
+      <div class="cell" id="cell-2"></div>
+      <div class="cell" id="cell-3"></div>
+      <div class="cell" id="cell-4"></div>
+      <div class="cell" id="cell-5"></div>
+      <div class="cell" id="cell-6"></div>
+      <div class="cell" id="cell-7"></div>
+      <div class="cell" id="cell-8"></div>
+    </div>
+    <button class="reset-btn" id="reset-btn">Reset Game</button>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const cells = Array.from(document.getElementsByClassName("cell"));
+    const message = document.getElementById("message");
+    const resetBtn = document.getElementById("reset-btn");
+
+    let currentPlayer = "X";
+    let gameActive = true;
+    let gameState = ["", "", "", "", "", "", "", "", ""];
+
+    const winningCombinations = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    function checkWinner() {
+      for (let combination of winningCombinations) {
+        const [a, b, c] = combination;
+        if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+          gameActive = false;
+          message.textContent = `${gameState[a]} Wins!`;
+          message.classList.add("winner");
+          return;
+        }
+      }
+
+      if (!gameState.includes("")) {
+        gameActive = false;
+        message.textContent = "It's a Draw!";
+        message.classList.add("draw");
+      }
+    }
+
+    function handleCellClick(index) {
+      if (!gameState[index] && gameActive) {
+        gameState[index] = currentPlayer;
+        cells[index].textContent = currentPlayer;
+        checkWinner();
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        message.textContent = `${currentPlayer}'s Turn`;
+      }
+    }
+
+    function resetGame() {
+      gameState = ["", "", "", "", "", "", "", "", ""];
+      cells.forEach(cell => cell.textContent = "");
+      currentPlayer = "X";
+      gameActive = true;
+      message.textContent = "Player X's Turn";
+      message.classList.remove("winner", "draw");
+    }
+
+    cells.forEach((cell, index) => {
+      cell.addEventListener("click", () => handleCellClick(index));
+    });
+
+    resetBtn.addEventListener("click", resetGame);
+
+  </script>
+
+</body>
+</html>
